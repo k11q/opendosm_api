@@ -5,15 +5,36 @@ const Papa = require('papaparse');
 const app = express();
 const port = process.env.PORT || 3000;
 
+function filterColumns(data, columns) {
+  return data.map((row) => {
+    const newRow = {};
+    columns.forEach((column) => {
+      if (row.hasOwnProperty(column)) {
+        newRow[column] = row[column];
+      }
+    });
+    return newRow;
+  });
+}
+
 app.get('/api/:basename/:filename', async (req, res) => {
   try {
     const { basename, filename } = req.params;
+    const { columns } = req.query;
+
     const response = await axios.get(`https://storage.googleapis.com/${basename}/${filename}.csv`);
 
     Papa.parse(response.data, {
       header: true,
       complete: (results) => {
-        res.json(results.data);
+        let filteredResults = results.data;
+
+        if (columns) {
+          const columnList = columns.split(',');
+          filteredResults = filterColumns(filteredResults, columnList);
+        }
+
+        res.json(filteredResults);
       },
       error: (err) => {
         res.status(500).json({ message: `Error parsing CSV file :${basename}/${filename}`, error: err });
