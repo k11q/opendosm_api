@@ -17,7 +17,11 @@ function filterColumns(data, columns) {
 	});
 }
 
-app.set("json spaces", 4);
+function filterByColumn(data, column, value) {
+	return data.filter((i) => i[column] == value);
+}
+
+//app.set("json spaces", 4);
 
 app.get("/api/:bucket/:file_name", async (req, res) => {
 	try {
@@ -59,6 +63,22 @@ app.get("/api/:bucket/:file_name", async (req, res) => {
 							columnList
 						);
 					}
+
+					Object.keys(req.query).forEach(
+						(key) => {
+							if (key !== "columns") {
+								filteredResults =
+									filterByColumn(
+										filteredResults,
+										key,
+										req
+											.query[
+											key
+										]
+									);
+							}
+						}
+					);
 
 					res.json(filteredResults);
 				},
