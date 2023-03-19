@@ -22,11 +22,11 @@ function filterColumns(data, columns) {
 
 function passesFilters(row, filters) {
   for (const column in filters) {
-    if (
-      row.hasOwnProperty(column) &&
-      row[column] !== filters[column]
-    ) {
-      return false;
+    if (row.hasOwnProperty(column)) {
+      const acceptedValues = filters[column].split(',');
+      if (!acceptedValues.includes(row[column])) {
+        return false;
+      }
     }
   }
   return true;
