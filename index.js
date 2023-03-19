@@ -1,10 +1,12 @@
 const express = require("express");
 const axios = require("axios");
 const Papa = require("papaparse");
-const stream = require("stream");
+const cors = require("corse");
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use(cors());
 
 function filterColumns(data, columns) {
   return data.map((row) => {
