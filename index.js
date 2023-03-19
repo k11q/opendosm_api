@@ -1,7 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const Papa = require("papaparse");
-const cors = require("corse");
+const cors = require("cors");
 
 const app = express();
 const port = process.env.PORT || 3000;
